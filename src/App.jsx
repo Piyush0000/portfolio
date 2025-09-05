@@ -292,7 +292,7 @@ const Portfolio = () => {
               </div>
               <div className="flex items-center space-x-2 px-4 py-2 bg-gray-800/50 rounded-full border border-purple-500/20">
                 <Database className="w-4 h-4 text-purple-400" />
-                <span>DB Developer Intern</span>
+                <span>Full Stack Web Developer Intern</span>
               </div>
               <div className="flex items-center space-x-2 px-4 py-2 bg-gray-800/50 rounded-full border border-purple-500/20">
                 <GitBranch className="w-4 h-4 text-purple-400" />
