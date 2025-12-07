@@ -98,7 +98,7 @@ const Portfolio = () => {
       tech: ["Python", "NLP", "TensorFlow", "React", "Node.js", "Machine Learning"],
       github: "https://github.com/Piyush0000",
       demo: "#",
-      image: "../public/argumate.png",
+      image: "./argumate.png",
       featured: true,
       icon: <Sparkles className="w-6 h-6" />
     },
@@ -108,7 +108,7 @@ const Portfolio = () => {
       tech: ["MongoDB", "Express.js", "React", "Node.js", "UPI Integration", "RESTful API"],
       github: "https://github.com/Piyush0000",
       demo: "#",
-      image: "../public/revive.png",
+      image: "./revive.png",
       featured: false,
       icon: <Globe className="w-6 h-6" />
     },
@@ -236,7 +236,7 @@ const Portfolio = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent hover:scale-105 transition-transform cursor-pointer">
-              Piyush.dev
+              Piyush
             </div>
             
             {/* Desktop Menu */}
@@ -980,7 +980,7 @@ const Portfolio = () => {
           </p>
 
           {/* Contact Methods */}
-          <div className="grid md:grid-cols-3 gap-8 mb-16">
+          <div className="grid md:grid-cols-3 gap-8 mb-8">
             <a 
               href="mailto:rathorepiyush0000@gmail.com"
               className="group p-8 bg-gray-800/80 rounded-2xl border border-purple-500/20 hover:border-purple-500/40 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-purple-500/10"
@@ -1017,6 +1017,24 @@ const Portfolio = () => {
               <h3 className="text-xl font-bold mb-3 text-purple-300">Call Me</h3>
               <p className="text-gray-400 mb-2">Let's talk directly</p>
               <p className="text-sm text-gray-300">+91 9717704058</p>
+            </a>
+          </div>
+
+          {/* Resume Download */}
+          <div className="mb-16 text-center">
+            <a 
+              href="/final_resume.pdf" 
+              download="Piyush_Rathore_Resume.pdf"
+              className="inline-flex items-center space-x-3 px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 shadow-2xl hover:shadow-purple-500/50 font-bold text-lg relative overflow-hidden group"
+            >
+              <span className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></span>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span className="relative z-10">Download My Resume</span>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 group-hover:translate-y-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+              </svg>
             </a>
           </div>
 
@@ -1107,7 +1125,7 @@ const Portfolio = () => {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
             <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-4">
-              Piyush.dev
+              Piyush
             </div>
             <p className="text-gray-400 max-w-md mx-auto">
               Crafting innovative solutions with AI, ML, and modern web technologies. 
