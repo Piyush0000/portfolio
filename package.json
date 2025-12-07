@@ -11,9 +11,15 @@
     "tailwind-init": "tailwindcss init -p"
   },
   "dependencies": {
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.4.2",
+    "@types/three": "^0.181.0",
+    "framer-motion": "^12.23.25",
     "lucide-react": "^0.542.0",
     "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "react-dom": "^19.1.1",
+    "react-parallax-tilt": "^1.7.315",
+    "three": "^0.181.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",

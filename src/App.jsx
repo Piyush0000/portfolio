@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Github, ExternalLink, Mail, Phone, MapPin, Code, Database, Palette, Zap, ChevronDown, Menu, X, Star, GitBranch, LinkedinIcon, Award, Briefcase, GraduationCap, Sparkles, Rocket, Brain, Heart, Activity, Globe } from 'lucide-react';
+import { Github, ExternalLink, Mail, Phone, MapPin, Code, Database, Palette, Zap, ChevronDown, Menu, X, Star, GitBranch, LinkedinIcon, Award, Briefcase, GraduationCap, Sparkles, Rocket, Brain, Heart, Activity, Globe, Coffee, Clipboard } from 'lucide-react';
 
 const Portfolio = () => {
   const [activeSection, setActiveSection] = useState('home');
@@ -513,21 +513,16 @@ const Portfolio = () => {
             <div className="space-y-8">
               <div className="space-y-6">
                 <p className="text-lg text-gray-300 leading-relaxed">
-                  I'm a driven Computer Science undergraduate at <span className="text-purple-400 font-semibold">Maharaja Agrasen Institute of Technology</span>, 
-                  specializing in Artificial Intelligence and Machine Learning. Currently working as a 
-                  <span className="text-pink-400 font-semibold"> Database Developer Intern</span>, gaining hands-on experience in database optimization and system design.
+                  Driven by a passion for technology and innovation, I specialize in building intelligent, impactful solutions through 
+                  <span className="text-purple-400 font-semibold">full-stack development and applied AI</span>. With a foundation in 
+                  <span className="text-pink-400 font-semibold">Computer Science and AIML</span>, I bring a proactive, problem-solving mindset to every project—
+                  whether it's creating real-world platforms or deploying machine learning models.
                 </p>
                 
                 <p className="text-lg text-gray-300 leading-relaxed">
-                  My passion lies in solving real-world problems through technology. I've participated in multiple 
-                  national hackathons, securing <span className="text-purple-400 font-semibold">Top 10</span> and 
-                  <span className="text-pink-400 font-semibold"> Top 4</span> positions, developing innovative solutions 
-                  across healthcare, legal assistance, and sustainability domains.
-                </p>
-
-                <p className="text-lg text-gray-300 leading-relaxed">
-                  As an active open-source contributor and member of various tech societies, I believe in 
-                  collaborative learning and giving back to the developer community.
+                  I thrive in collaborative environments and am committed to delivering 
+                  <span className="text-green-400 font-semibold">high-quality, scalable results</span> that make a 
+                  <span className="text-yellow-400 font-semibold">tangible difference</span>.
                 </p>
               </div>
 
@@ -1096,6 +1091,63 @@ const Portfolio = () => {
             </div>
           </div>
 
+          {/* Buy Me a Drink Section */}
+          <div className="mt-16 bg-gradient-to-r from-purple-900/30 to-pink-900/30 p-8 rounded-2xl border border-purple-500/30 backdrop-blur-sm text-center transform transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/20 group">
+            <div className="flex flex-col items-center">
+              <div className="relative mb-6">
+                <div className="absolute -inset-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full blur-lg opacity-75 group-hover:opacity-100 transition-all duration-500 animate-pulse"></div>
+                <h3 className="text-3xl font-bold text-purple-300 flex items-center justify-center gap-3 relative z-10">
+                  <Coffee className="w-8 h-8 animate-bounce" />
+                  <span>Buy Me a Drink</span>
+                  <Coffee className="w-8 h-8 animate-bounce" />
+                </h3>
+              </div>
+              
+              <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
+                If you like my work and want to support me, feel free to buy me a coffee! 
+                Your support helps me continue building amazing projects.
+              </p>
+              
+              {/* UPI QR Code Container with Animation */}
+              <div className="mb-8 p-6 bg-gradient-to-br from-white to-gray-100 rounded-2xl shadow-2xl transform transition-all duration-500 group-hover:rotate-3 inline-block relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="relative z-10">
+                  <img 
+                    src="/upi.jpeg" 
+                    alt="UPI QR Code for donations" 
+                    className="w-64 h-64 object-contain transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
+              </div>
+              
+              <div className="mb-6 transform transition-all duration-500 group-hover:-translate-y-1">
+                <p className="text-gray-400 mb-3 text-base">
+                  Scan the QR code with any UPI app to send a donation
+                </p>
+                <div className="inline-flex items-center gap-3 px-6 py-3 bg-gray-800/50 rounded-xl border border-purple-500/30 hover:border-purple-500/60 transition-all duration-300 cursor-pointer group/copy" onClick={() => {
+                  navigator.clipboard.writeText('rathorepiyush0000@okaxis');
+                  alert('UPI ID copied to clipboard!');
+                }}>
+                  <p className="text-purple-300 font-mono text-base">
+                    rathorepiyush0000@okaxis
+                  </p>
+                  <Clipboard className="w-5 h-5 text-purple-400 group-hover/copy:scale-110 transition-transform" />
+                </div>
+              </div>
+              
+              <div className="mt-6 flex flex-wrap justify-center gap-4">
+                <div className="flex items-center text-gray-300 text-base px-4 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full border border-purple-500/30">
+                  <Heart className="w-5 h-5 text-pink-500 mr-2 animate-pulse" />
+                  <span>Thank you for your support!</span>
+                </div>
+                <div className="flex items-center text-gray-300 text-base px-4 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full border border-blue-500/30">
+                  <Sparkles className="w-5 h-5 text-blue-400 mr-2" />
+                  <span>Makes my day brighter!</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Additional Links */}
           <div className="mt-12 flex justify-center space-x-8">
             <a 
@@ -1204,6 +1256,15 @@ const Portfolio = () => {
           }
           50% {
             transform: translateY(-10px);
+          }
+        }
+        
+        @keyframes bounce {
+          0%, 100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-5px);
           }
         }
         
