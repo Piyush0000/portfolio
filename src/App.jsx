@@ -90,12 +90,19 @@ const Portfolio = () => {
       console.log('Sending request to:', endpoint);
       console.log('Form data:', formData);
       
+      // Add a timeout for the fetch request
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+      
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
+        signal: controller.signal
+      }).finally(() => {
+        clearTimeout(timeoutId);
       });
       
       console.log('Response status:', response.status);
@@ -132,7 +139,9 @@ const Portfolio = () => {
       }
     } catch (error) {
       console.error('Error submitting contact form:', error);
-      if (error instanceof SyntaxError) {
+      if (error.name === 'AbortError') {
+        alert('Request timeout. The server might be slow to respond. Please try again later.');
+      } else if (error instanceof SyntaxError) {
         alert('Error parsing server response. The server might not be responding correctly.');
       } else {
         alert('Error submitting form. Please try again. Error: ' + error.message);
