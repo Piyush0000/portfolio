@@ -36,9 +36,9 @@ npm install
 3. Create a `.env` file in the backend directory with the following:
 ```
 PORT=5000
-MONGODB_URI=mongodb+srv://piyushrathore:piyushcodes@cluster0.wiqfcjk.mongodb.net/shopify_mongo?retryWrites=true&w=majority&appName=Cluster0
-EMAIL_USER=rathorepiyush0000@gmail.com
-EMAIL_PASS=voli bjar dlxh zgbg
+MONGODB_URI=
+EMAIL_USER=
+EMAIL_PASS=
 ```
 
 4. Start the backend server:
