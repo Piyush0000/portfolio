@@ -85,11 +85,12 @@ const Portfolio = () => {
     setIsSubmitting(true);
     
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || '/api';
-      console.log('Sending request to:', `${apiUrl}/contact`);
+      const apiUrl = import.meta.env.VITE_API_URL || '';
+      const endpoint = apiUrl ? `${apiUrl}/api/contact` : '/api/contact';
+      console.log('Sending request to:', endpoint);
       console.log('Form data:', formData);
       
-      const response = await fetch(`${apiUrl}/contact`, {
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
