@@ -8,6 +8,14 @@ const Portfolio = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const [visibleSections, setVisibleSections] = useState(new Set());
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showThankYou, setShowThankYou] = useState(false);
   const observerRef = useRef(null);
 
   useEffect(() => {
@@ -65,6 +73,55 @@ const Portfolio = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleSubmitContactForm = async (e) => {
+    e.preventDefault();
+    
+    if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+      alert('Please fill in all fields');
+      return;
+    }
+    
+    setIsSubmitting(true);
+    
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || '/api';
+      const response = await fetch(`${apiUrl}/contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        // Reset form
+        setFormData({
+          name: '',
+          email: '',
+          subject: '',
+          message: ''
+        });
+        
+        // Show thank you page
+        setShowThankYou(true);
+        
+        // Hide thank you page after 5 seconds
+        setTimeout(() => {
+          setShowThankYou(false);
+        }, 5000);
+      } else {
+        alert('Error submitting form: ' + result.message);
+      }
+    } catch (error) {
+      console.error('Error submitting contact form:', error);
+      alert('Error submitting form. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const scrollToSection = (sectionId) => {
     document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
@@ -1043,6 +1100,8 @@ const Portfolio = () => {
                     type="text" 
                     placeholder=" "
                     className="peer w-full p-4 bg-gray-700/50 border border-purple-500/20 rounded-xl focus:border-purple-500/60 focus:outline-none transition-colors placeholder-transparent"
+                    value={formData.name}
+                    onChange={(e) => setFormData({...formData, name: e.target.value})}
                   />
                   <label className="absolute left-4 -top-2.5 bg-gray-800 px-2 text-sm text-purple-300 transition-all peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-focus:-top-2.5 peer-focus:left-4 peer-focus:text-purple-300 peer-focus:bg-gray-800">
                     Your Name
@@ -1053,6 +1112,8 @@ const Portfolio = () => {
                     type="email" 
                     placeholder=" "
                     className="peer w-full p-4 bg-gray-700/50 border border-purple-500/20 rounded-xl focus:border-purple-500/60 focus:outline-none transition-colors placeholder-transparent"
+                    value={formData.email}
+                    onChange={(e) => setFormData({...formData, email: e.target.value})}
                   />
                   <label className="absolute left-4 -top-2.5 bg-gray-800 px-2 text-sm text-purple-300 transition-all peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-focus:-top-2.5 peer-focus:left-4 peer-focus:text-purple-300 peer-focus:bg-gray-800">
                     Your Email
@@ -1064,6 +1125,8 @@ const Portfolio = () => {
                   type="text" 
                   placeholder=" "
                   className="peer w-full p-4 bg-gray-700/50 border border-purple-500/20 rounded-xl focus:border-purple-500/60 focus:outline-none transition-colors placeholder-transparent"
+                  value={formData.subject}
+                  onChange={(e) => setFormData({...formData, subject: e.target.value})}
                 />
                 <label className="absolute left-4 -top-2.5 bg-gray-800 px-2 text-sm text-purple-300 transition-all peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-focus:-top-2.5 peer-focus:left-4 peer-focus:text-purple-300 peer-focus:bg-gray-800">
                   Subject
@@ -1074,17 +1137,20 @@ const Portfolio = () => {
                   rows="6" 
                   placeholder=" "
                   className="peer w-full p-4 bg-gray-700/50 border border-purple-500/20 rounded-xl focus:border-purple-500/60 focus:outline-none transition-colors resize-none placeholder-transparent"
+                  value={formData.message}
+                  onChange={(e) => setFormData({...formData, message: e.target.value})}
                 ></textarea>
                 <label className="absolute left-4 -top-2.5 bg-gray-800 px-2 text-sm text-purple-300 transition-all peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-focus:-top-2.5 peer-focus:left-4 peer-focus:text-purple-300 peer-focus:bg-gray-800">
                   Your Message
                 </label>
               </div>
               <button 
-                onClick={() => window.open('mailto:rathorepiyush0000@gmail.com?subject=Portfolio Contact')}
-                className="group w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-purple-500/25 font-medium"
+                onClick={handleSubmitContactForm}
+                disabled={isSubmitting}
+                className="group w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-purple-500/25 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span className="flex items-center justify-center space-x-2">
-                  <span>Send Message</span>
+                  <span>{isSubmitting ? 'Sending...' : 'Send Message'}</span>
                   <Mail className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </span>
               </button>
@@ -1171,6 +1237,29 @@ const Portfolio = () => {
           </div>
         </div>
       </section>
+
+      {/* Thank You Modal */}
+      {showThankYou && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-gray-800/90 p-8 rounded-2xl border border-purple-500/40 max-w-md w-full text-center transform animate-pulse">
+            <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </div>
+            <h3 className="text-2xl font-bold text-green-400 mb-4">Thank You!</h3>
+            <p className="text-gray-300 mb-6">
+              Your message has been sent successfully. I'll get back to you soon!
+            </p>
+            <button 
+              onClick={() => setShowThankYou(false)}
+              className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Enhanced Footer */}
       <footer className="py-12 px-4 border-t border-purple-500/20 bg-gray-900">

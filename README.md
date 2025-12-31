@@ -1,12 +1,66 @@
-# React + Vite
+# Piyush Rathore - Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is my personal portfolio website showcasing my projects, skills, and experience.
 
-Currently, two official plugins are available:
+## Project Structure
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- `src/` - Frontend React application
+- `backend/` - Backend server with MongoDB and email functionality
 
-## Expanding the ESLint configuration
+## Running the Application
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Frontend (React + Vite)
+
+1. Install dependencies:
+```bash
+npm install
+```
+
+2. Start the development server:
+```bash
+npm run dev
+```
+
+### Backend (Node.js + Express)
+
+1. Navigate to the backend directory:
+```bash
+cd backend
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Create a `.env` file in the backend directory with the following:
+```
+PORT=5000
+MONGODB_URI=mongodb+srv://piyushrathore:piyushcodes@cluster0.wiqfcjk.mongodb.net/shopify_mongo?retryWrites=true&w=majority&appName=Cluster0
+EMAIL_USER=rathorepiyush0000@gmail.com
+EMAIL_PASS=voli bjar dlxh zgbg
+```
+
+4. Start the backend server:
+```bash
+npm run dev
+```
+
+## Features
+
+- Modern React frontend with Vite and Tailwind CSS
+- Contact form with MongoDB storage
+- Email notifications for contact form submissions
+- Responsive design for all devices
+- Animated UI elements and smooth transitions
+
+## Technologies Used
+
+- React 19
+- Vite
+- Tailwind CSS
+- Node.js
+- Express.js
+- MongoDB
+- Nodemailer
+- Lucide React Icons
