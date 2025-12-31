@@ -86,6 +86,9 @@ const Portfolio = () => {
     
     try {
       const apiUrl = import.meta.env.VITE_API_URL || '/api';
+      console.log('Sending request to:', `${apiUrl}/contact`);
+      console.log('Form data:', formData);
+      
       const response = await fetch(`${apiUrl}/contact`, {
         method: 'POST',
         headers: {
@@ -94,7 +97,18 @@ const Portfolio = () => {
         body: JSON.stringify(formData),
       });
       
+      console.log('Response status:', response.status);
+      
+      // Check if response is ok before parsing JSON
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Server error response:', errorText);
+        alert('Server error: ' + errorText);
+        return;
+      }
+      
       const result = await response.json();
+      console.log('Response data:', result);
       
       if (result.success) {
         // Reset form
@@ -117,7 +131,11 @@ const Portfolio = () => {
       }
     } catch (error) {
       console.error('Error submitting contact form:', error);
-      alert('Error submitting form. Please try again.');
+      if (error instanceof SyntaxError) {
+        alert('Error parsing server response. The server might not be responding correctly.');
+      } else {
+        alert('Error submitting form. Please try again. Error: ' + error.message);
+      }
     } finally {
       setIsSubmitting(false);
     }
