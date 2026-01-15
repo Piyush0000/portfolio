@@ -6,6 +6,8 @@ const Portfolio = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isLoaded, setIsLoaded] = useState(false);
+  const [showLoader, setShowLoader] = useState(true);
+  const [loadProgress, setLoadProgress] = useState(0);
   const [scrollY, setScrollY] = useState(0);
   const [visibleSections, setVisibleSections] = useState(new Set());
   const [formData, setFormData] = useState({
@@ -17,9 +19,30 @@ const Portfolio = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showThankYou, setShowThankYou] = useState(false);
   const observerRef = useRef(null);
+  const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1;
+  const viewportHeight = typeof window !== 'undefined' ? window.innerHeight : 1;
+  const avatarTilt = {
+    transform: `perspective(1400px) rotateX(${(mousePosition.y / viewportHeight - 0.5) * -6}deg) rotateY(${(mousePosition.x / viewportWidth - 0.5) * 10}deg)`,
+  };
 
   useEffect(() => {
-    setIsLoaded(true);
+    const loaderDuration = 3000;
+    const start = performance.now();
+
+    const progressInterval = setInterval(() => {
+      const elapsed = performance.now() - start;
+      const pct = Math.min(100, Math.round((elapsed / loaderDuration) * 100));
+      setLoadProgress(pct);
+      if (pct >= 100) {
+        clearInterval(progressInterval);
+      }
+    }, 60);
+
+    const loaderTimer = setTimeout(() => {
+      setLoadProgress(100);
+      setIsLoaded(true);
+      setShowLoader(false);
+    }, loaderDuration);
     
     const handleMouseMove = (e) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
@@ -50,6 +73,8 @@ const Portfolio = () => {
     });
     
     return () => {
+      clearTimeout(loaderTimer);
+      clearInterval(progressInterval);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('scroll', handleScroll);
       observerRef.current?.disconnect();
@@ -304,7 +329,68 @@ const Portfolio = () => {
   ];
 
   return (
-    <div className="bg-gray-900 text-white min-h-screen overflow-x-hidden">
+    <div className="bg-[#020a07] text-[#d7ffe2] min-h-screen overflow-x-hidden font-['JetBrains_Mono','Inter','system-ui'] relative hacker-grid">
+      {/* Loader Overlay */}
+      {showLoader && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#020a07]">
+          <div className="loader-shell">
+            <div className="loader-core" />
+            <div className="loader-ring ring-1" />
+            <div className="loader-ring ring-2" />
+            <div className="loader-ring ring-3" />
+            <p className="mt-6 text-sm uppercase tracking-[0.3em] text-emerald-200">
+              {loadProgress}%
+            </p>
+            <p className="text-xs text-emerald-300/80 mt-2 tracking-[0.2em]">Initializing...</p>
+          </div>
+        </div>
+      )}
+
+      <div className="pointer-events-none absolute inset-0 opacity-35 mix-blend-screen bg-[radial-gradient(circle_at_center,rgba(34,197,94,0.15),transparent_52%)]" />
+      <div className="pointer-events-none absolute inset-0 opacity-25 scanline" />
+      {/* Global background shared across all sections */}
+      <div className="pointer-events-none fixed inset-0 -z-10">
+        <div 
+          className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-emerald-500/25 to-lime-500/20 rounded-full blur-3xl animate-pulse"
+          style={{
+            transform: `translate(${scrollY * 0.05}px, ${scrollY * 0.1}px)`,
+            animation: 'float 10s ease-in-out infinite'
+          }}
+        />
+        <div 
+          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gradient-to-r from-teal-500/25 to-emerald-500/20 rounded-full blur-3xl animate-pulse"
+          style={{
+            transform: `translate(-${scrollY * 0.05}px, -${scrollY * 0.08}px)`,
+            animation: 'float 12s ease-in-out infinite reverse'
+          }}
+        />
+        <div 
+          className="absolute top-1/2 left-1/2 w-72 h-72 bg-gradient-to-r from-emerald-500/15 to-lime-500/15 rounded-full blur-3xl"
+          style={{
+            transform: `translate(-50%, -50%) translate(${scrollY * 0.03}px, ${scrollY * 0.06}px)`,
+            animation: 'float 14s ease-in-out infinite'
+          }}
+        />
+        <div className="absolute inset-0">
+          {[...Array(120)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute rounded-full"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                width: `${Math.random() * 4 + 1}px`,
+                height: `${Math.random() * 4 + 1}px`,
+                background: i % 3 === 0 ? '#22c55e' : i % 3 === 1 ? '#14b8a6' : '#84cc16',
+                opacity: Math.random() * 0.3 + 0.1,
+                animation: `twinkle ${2 + Math.random() * 4}s infinite ${Math.random() * 2}s, float ${5 + Math.random() * 5}s ease-in-out infinite ${Math.random() * 2}s`,
+                transform: `translateY(${scrollY * (0.05 + Math.random() * 0.1)}px)`,
+                boxShadow: `0 0 ${Math.random() * 10 + 5}px currentColor`
+              }}
+            />
+          ))}
+        </div>
+      </div>
       {/* Enhanced Custom Cursor */}
       <div 
         className="fixed w-4 h-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full pointer-events-none z-50 mix-blend-difference transition-all duration-200 ease-out"
@@ -317,10 +403,10 @@ const Portfolio = () => {
       />
 
       {/* Enhanced Navigation */}
-      <nav className="fixed top-0 w-full bg-gray-900/95 backdrop-blur-lg z-40 border-b border-purple-500/20">
+      <nav className="fixed top-0 w-full bg-[#03130c]/90 backdrop-blur-lg z-40 border-b border-emerald-500/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <div className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent hover:scale-105 transition-transform cursor-pointer">
+            <div className="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-lime-300 bg-clip-text text-transparent hover:scale-105 transition-transform cursor-pointer drop-shadow-[0_0_12px_rgba(34,197,94,0.55)]">
               Piyush
             </div>
             
@@ -330,13 +416,13 @@ const Portfolio = () => {
                 <button
                   key={item}
                   onClick={() => scrollToSection(item)}
-                  className={`capitalize transition-all duration-300 hover:text-purple-400 relative ${
-                    activeSection === item ? 'text-purple-400' : ''
+                  className={`capitalize transition-all duration-300 hover:text-emerald-300 relative ${
+                    activeSection === item ? 'text-emerald-300' : ''
                   }`}
                 >
                   {item}
                   {activeSection === item && (
-                    <div className="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full"></div>
+                    <div className="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-emerald-400 to-lime-400 rounded-full"></div>
                   )}
                 </button>
               ))}
@@ -344,7 +430,7 @@ const Portfolio = () => {
 
             {/* Mobile Menu Button */}
             <button
-              className="md:hidden p-2 rounded-lg hover:bg-purple-500/10 transition-colors"
+              className="md:hidden p-2 rounded-lg hover:bg-emerald-500/10 transition-colors"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -354,12 +440,12 @@ const Portfolio = () => {
 
         {/* Enhanced Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden bg-gray-800/95 backdrop-blur-lg border-t border-purple-500/20">
+          <div className="md:hidden bg-[#08150e]/95 backdrop-blur-lg border-t border-emerald-500/20">
             {['home', 'about', 'experience', 'skills', 'projects', 'contact'].map((item) => (
               <button
                 key={item}
                 onClick={() => scrollToSection(item)}
-                className="block w-full text-left px-6 py-4 capitalize hover:bg-purple-500/10 transition-colors border-b border-gray-700/50"
+                className="block w-full text-left px-6 py-4 capitalize hover:bg-emerald-500/10 transition-colors border-b border-emerald-900/60"
               >
                 {item}
               </button>
@@ -370,175 +456,142 @@ const Portfolio = () => {
 
       {/* Enhanced Hero Section */}
       <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden">
-        {/* Animated Background Gradient Orbs */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div 
-            className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-purple-500/30 to-pink-500/30 rounded-full blur-3xl animate-pulse"
-            style={{
-              transform: `translate(${scrollY * 0.05}px, ${scrollY * 0.1}px)`,
-              animation: 'float 8s ease-in-out infinite'
-            }}
-          />
-          <div 
-            className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gradient-to-r from-blue-500/30 to-purple-500/30 rounded-full blur-3xl animate-pulse"
-            style={{
-              transform: `translate(-${scrollY * 0.05}px, -${scrollY * 0.08}px)`,
-              animation: 'float 10s ease-in-out infinite reverse'
-            }}
-          />
-          <div 
-            className="absolute top-1/2 left-1/2 w-72 h-72 bg-gradient-to-r from-pink-500/20 to-orange-500/20 rounded-full blur-3xl"
-            style={{
-              transform: `translate(-50%, -50%) translate(${scrollY * 0.03}px, ${scrollY * 0.06}px)`,
-              animation: 'float 12s ease-in-out infinite'
-            }}
-          />
-        </div>
-
-        {/* Enhanced Animated Background Particles */}
-        <div className="absolute inset-0">
-          {[...Array(120)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute rounded-full"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                width: `${Math.random() * 4 + 1}px`,
-                height: `${Math.random() * 4 + 1}px`,
-                background: i % 3 === 0 ? '#a855f7' : i % 3 === 1 ? '#ec4899' : '#3b82f6',
-                opacity: Math.random() * 0.3 + 0.1,
-                animation: `twinkle ${2 + Math.random() * 4}s infinite ${Math.random() * 2}s, float ${5 + Math.random() * 5}s ease-in-out infinite ${Math.random() * 2}s`,
-                transform: `translateY(${scrollY * (0.05 + Math.random() * 0.1)}px)`,
-                boxShadow: `0 0 ${Math.random() * 10 + 5}px currentColor`
-              }}
-            />
-          ))}
-        </div>
-
-        <div className="max-w-5xl mx-auto text-center px-4 relative z-10">
-          <div 
-            className={`transform transition-all duration-1500 ${
-              isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-            }`}
-            style={{ animation: isLoaded ? 'fadeInUp 1s ease-out' : 'none' }}
-          >
-            <div className="mb-6 animate-bounce-slow">
-              <span className="inline-block px-6 py-3 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/40 rounded-full text-sm font-medium mb-4 backdrop-blur-sm hover:scale-105 transition-transform duration-300">
-                <span className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 animate-spin-slow" />
-                  Welcome to my digital universe
-                  <Sparkles className="w-4 h-4 animate-spin-slow" />
+        <div className="max-w-6xl mx-auto px-4 relative z-10">
+          <div className="flex flex-col lg:flex-row items-center gap-12">
+            <div 
+              className={`flex-1 text-center lg:text-left transform transition-all duration-1500 ${
+                isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+              }`}
+              style={{ animation: isLoaded ? 'fadeInUp 1s ease-out' : 'none' }}
+            >
+              <div className="mb-6 animate-bounce-slow">
+                <span className="inline-block px-6 py-3 bg-gradient-to-r from-emerald-500/15 via-lime-500/15 to-emerald-500/15 border border-emerald-400/40 rounded-full text-sm font-medium mb-4 backdrop-blur-sm hover:scale-105 transition-transform duration-300 text-emerald-200">
+                  <span className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 animate-spin-slow" />
+                    Welcome to my hacker space
+                    <Sparkles className="w-4 h-4 animate-spin-slow" />
+                  </span>
                 </span>
-              </span>
-            </div>
-            
-            <h1 className="text-6xl md:text-8xl lg:text-9xl font-bold mb-8 leading-tight">
-              <span 
-                className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent"
-                style={{
-                  animation: 'gradient-shift 3s ease-in-out infinite',
-                  backgroundSize: '200% 200%'
-                }}
-              >
-                Hi, I'm Piyush
-              </span>
-              <div className="mt-4 text-3xl md:text-4xl">
+              </div>
+              
+              <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-8 leading-tight">
                 <span 
-                  className="inline-block bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent"
-                  style={{ animation: 'typing 3.5s steps(40, end) infinite' }}
+                  className="bg-gradient-to-r from-emerald-400 via-lime-300 to-emerald-300 bg-clip-text text-transparent drop-shadow-[0_0_14px_rgba(34,197,94,0.45)] block"
+                  style={{
+                    animation: 'gradient-shift 3s ease-in-out infinite',
+                    backgroundSize: '200% 200%'
+                  }}
                 >
-                  Rathore
+                  Hi, I'm Piyush Rathore
                 </span>
+              </h1>
+              
+              <div className="space-y-6 mb-8">
+                <p className="text-2xl md:text-4xl text-emerald-100 font-light">
+                  <span className="bg-gradient-to-r from-emerald-300 to-lime-300 bg-clip-text text-transparent font-semibold">
+                    AI/ML Engineer
+                  </span>
+                  {" + "}
+                  <span className="bg-gradient-to-r from-teal-200 to-cyan-300 bg-clip-text text-transparent font-semibold">
+                    Full Stack Developer
+                  </span>
+                </p>
+                <p className="text-lg md:text-xl text-emerald-100/80 max-w-3xl mx-auto leading-relaxed">
+                  🤖 Crafting <span className="text-emerald-300 font-semibold">neon-grade AI systems</span> • 
+                  🚀 Shipping <span className="text-lime-300 font-semibold">battle-tested products</span> • 
+                  🌐 Operating in <span className="text-teal-300 font-semibold">full-stack stealth mode</span>
+                </p>
               </div>
-            </h1>
-            
-            <div className="space-y-6 mb-8">
-              <p className="text-2xl md:text-4xl text-gray-200 font-light">
-                <span className="bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent font-semibold">
-                  AI/ML Engineer
-                </span>
-                {" + "}
-                <span className="bg-gradient-to-r from-blue-300 to-cyan-300 bg-clip-text text-transparent font-semibold">
-                  Full Stack Developer
-                </span>
-              </p>
-              <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-                🤖 Building <span className="text-purple-400 font-semibold">AI solutions that matter</span> • 
-                🚀 Making the <span className="text-pink-400 font-semibold">impossible possible</span> • 
-                🌟 Changing the world, <span className="text-blue-400 font-semibold">one commit at a time</span>
-              </p>
-            </div>
 
-            {/* Animated Stats Counter */}
-            <div className="flex flex-wrap justify-center gap-6 mb-12">
-              <div className="group px-6 py-4 bg-gray-800/50 rounded-2xl border border-purple-500/30 hover:border-purple-500/60 transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-purple-500/50 backdrop-blur-sm">
-                <div className="text-3xl font-bold text-purple-400 mb-1">
-                  <span className="inline-block group-hover:animate-bounce">20+</span>
+              {/* Animated Stats Counter */}
+              <div className="flex flex-wrap justify-center lg:justify-start gap-6 mb-12">
+                <div className="group px-6 py-4 bg-[#0c1c14]/70 rounded-2xl border border-emerald-500/40 hover:border-emerald-400/80 transition-all duration-300 hover:scale-110 hover:shadow-[0_0_32px_rgba(34,197,94,0.45)] backdrop-blur-sm">
+                  <div className="text-3xl font-bold text-emerald-300 mb-1">
+                    <span className="inline-block group-hover:animate-bounce">20+</span>
+                  </div>
+                  <div className="text-xs text-emerald-200/70">Projects Built</div>
                 </div>
-                <div className="text-xs text-gray-400">Projects Built</div>
-              </div>
-              <div className="group px-6 py-4 bg-gray-800/50 rounded-2xl border border-pink-500/30 hover:border-pink-500/60 transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-pink-500/50 backdrop-blur-sm">
-                <div className="text-3xl font-bold text-pink-400 mb-1">
-                  <span className="inline-block group-hover:animate-bounce">TOP 4</span>
+                <div className="group px-6 py-4 bg-[#0c1c14]/70 rounded-2xl border border-emerald-500/40 hover:border-lime-400/70 transition-all duration-300 hover:scale-110 hover:shadow-[0_0_32px_rgba(163,230,53,0.35)] backdrop-blur-sm">
+                  <div className="text-3xl font-bold text-lime-300 mb-1">
+                    <span className="inline-block group-hover:animate-bounce">TOP 4</span>
+                  </div>
+                  <div className="text-xs text-emerald-200/70">Hackathon Rank</div>
                 </div>
-                <div className="text-xs text-gray-400">Hackathon Rank</div>
-              </div>
-              <div className="group px-6 py-4 bg-gray-800/50 rounded-2xl border border-blue-500/30 hover:border-blue-500/60 transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-blue-500/50 backdrop-blur-sm">
-                <div className="text-3xl font-bold text-blue-400 mb-1">
-                  <span className="inline-block group-hover:animate-bounce">85%</span>
+                <div className="group px-6 py-4 bg-[#0c1c14]/70 rounded-2xl border border-emerald-500/40 hover:border-teal-400/70 transition-all duration-300 hover:scale-110 hover:shadow-[0_0_32px_rgba(45,212,191,0.35)] backdrop-blur-sm">
+                  <div className="text-3xl font-bold text-teal-300 mb-1">
+                    <span className="inline-block group-hover:animate-bounce">85%</span>
+                  </div>
+                  <div className="text-xs text-emerald-200/70">ML Accuracy</div>
                 </div>
-                <div className="text-xs text-gray-400">ML Accuracy</div>
-              </div>
-              <div className="group px-6 py-4 bg-gray-800/50 rounded-2xl border border-green-500/30 hover:border-green-500/60 transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-green-500/50 backdrop-blur-sm">
-                <div className="text-3xl font-bold text-green-400 mb-1">
-                  <span className="inline-block group-hover:animate-bounce">∞</span>
+                <div className="group px-6 py-4 bg-[#0c1c14]/70 rounded-2xl border border-emerald-500/40 hover:border-emerald-400/80 transition-all duration-300 hover:scale-110 hover:shadow-[0_0_32px_rgba(34,197,94,0.45)] backdrop-blur-sm">
+                  <div className="text-3xl font-bold text-emerald-300 mb-1">
+                    <span className="inline-block group-hover:animate-bounce">∞</span>
+                  </div>
+                  <div className="text-xs text-emerald-200/70">Cups of Coffee</div>
                 </div>
-                <div className="text-xs text-gray-400">Coffee Consumed</div>
               </div>
-            </div>
 
-            {/* Enhanced Quick Stats with Animations */}
-            <div className="flex flex-wrap justify-center gap-4 mb-12 text-sm">
+              {/* Enhanced Quick Stats with Animations */}
+              <div className="flex flex-wrap justify-center lg:justify-start gap-4 mb-12 text-sm">
               {[
-                { icon: <Award className="w-4 h-4" />, text: "Hackathon Winner", color: "purple" },
-                { icon: <Database className="w-4 h-4" />, text: "Full Stack Intern", color: "pink" },
-                { icon: <GitBranch className="w-4 h-4" />, text: "Open Source Contributor", color: "blue" },
-                { icon: <Brain className="w-4 h-4" />, text: "AI/ML Specialist", color: "green" }
-              ].map((item, idx) => (
-                <div 
-                  key={idx}
-                  className={`flex items-center space-x-2 px-4 py-2 bg-gray-800/50 rounded-full border border-${item.color}-500/30 hover:border-${item.color}-500/60 transition-all duration-300 hover:scale-105 backdrop-blur-sm group`}
-                  style={{ animation: `fadeInUp 0.5s ease-out ${idx * 0.1}s both` }}
+                  { icon: <Award className="w-4 h-4" />, text: "Hackathon Winner", color: "emerald" },
+                  { icon: <Database className="w-4 h-4" />, text: "Full Stack Intern", color: "lime" },
+                  { icon: <GitBranch className="w-4 h-4" />, text: "Open Source Contributor", color: "teal" },
+                  { icon: <Brain className="w-4 h-4" />, text: "AI/ML Specialist", color: "emerald" },
+                  { icon: <Sparkles className="w-4 h-4" />, text: "Freelancer", color: "lime" }
+                ].map((item, idx) => (
+                  <div 
+                    key={idx}
+                    className="flex items-center space-x-2 px-4 py-2 bg-[#0c1c14]/70 rounded-full border border-emerald-500/40 hover:border-emerald-400/80 transition-all duration-300 hover:scale-105 backdrop-blur-sm group"
+                    style={{ animation: `fadeInUp 0.5s ease-out ${idx * 0.1}s both` }}
+                  >
+                    <span className={`text-${item.color}-300 group-hover:rotate-12 transition-transform`}>{item.icon}</span>
+                    <span className="group-hover:text-emerald-50 transition-colors">{item.text}</span>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="flex flex-col sm:flex-row gap-6 justify-center lg:justify-start">
+                <button 
+                  onClick={() => scrollToSection('projects')}
+                  className="group px-10 py-5 bg-gradient-to-r from-emerald-600 to-lime-500 rounded-full hover:from-emerald-500 hover:to-lime-400 transition-all duration-300 transform hover:scale-110 shadow-[0_0_35px_rgba(34,197,94,0.45)] font-semibold text-lg relative overflow-hidden"
                 >
-                  <span className={`text-${item.color}-400 group-hover:rotate-12 transition-transform`}>{item.icon}</span>
-                  <span className="group-hover:text-white transition-colors">{item.text}</span>
-                </div>
-              ))}
+                  <span className="absolute inset-0 bg-gradient-to-r from-white/15 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                  <span className="flex items-center justify-center space-x-3 relative z-10">
+                    <Rocket className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                    <span>Explore My Work</span>
+                    <ExternalLink className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </button>
+                <button 
+                  onClick={() => scrollToSection('contact')}
+                  className="group px-10 py-5 border-2 border-emerald-500 rounded-full hover:bg-emerald-500/10 transition-all duration-300 transform hover:scale-110 font-semibold text-lg backdrop-blur-sm relative overflow-hidden"
+                >
+                  <span className="absolute inset-0 bg-gradient-to-r from-emerald-500/15 to-lime-500/15 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                  <span className="flex items-center justify-center space-x-2 relative z-10">
+                    <Mail className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                    <span>Let's Connect</span>
+                  </span>
+                </button>
+              </div>
             </div>
-            
-            <div className="flex flex-col sm:flex-row gap-6 justify-center">
-              <button 
-                onClick={() => scrollToSection('projects')}
-                className="group px-10 py-5 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-110 shadow-2xl hover:shadow-purple-500/50 font-semibold text-lg relative overflow-hidden"
-              >
-                <span className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></span>
-                <span className="flex items-center justify-center space-x-3 relative z-10">
-                  <Rocket className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                  <span>Explore My Work</span>
-                  <ExternalLink className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </span>
-              </button>
-              <button 
-                onClick={() => scrollToSection('contact')}
-                className="group px-10 py-5 border-2 border-purple-500 rounded-full hover:bg-purple-500/20 transition-all duration-300 transform hover:scale-110 font-semibold text-lg backdrop-blur-sm relative overflow-hidden"
-              >
-                <span className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity"></span>
-                <span className="flex items-center justify-center space-x-2 relative z-10">
-                  <Mail className="w-5 h-5 group-hover:rotate-12 transition-transform" />
-                  <span>Let's Connect</span>
-                </span>
-              </button>
+
+            <div className="flex-1 flex justify-center">
+              <div className="avatar-orb relative w-64 h-64 md:w-80 md:h-80" style={avatarTilt}>
+                <div className="absolute -inset-6 rounded-[32px] neon-ring" />
+                <div className="absolute -inset-3 rounded-[28px] border border-emerald-400/40 animate-spin-slow opacity-60" />
+                <div className="absolute inset-0 rounded-[24px] bg-gradient-to-br from-emerald-500/20 via-teal-500/10 to-lime-400/20 blur-2xl animate-pulse-glow" />
+                <div className="absolute inset-4 rounded-[24px] bg-gradient-to-br from-[#0f2618] via-[#0b1a11] to-[#06230f] border border-emerald-500/40 shadow-[0_0_40px_rgba(34,197,94,0.35)] overflow-hidden backdrop-blur">
+                  <img 
+                    src="/pic.jpg" 
+                    alt="Piyush Rathore" 
+                    className="w-full h-full object-cover object-center mix-blend-screen opacity-95"
+                  />
+                  <div className="absolute inset-0 hacker-grid opacity-30" />
+                </div>
+                <div className="absolute inset-10 rounded-[18px] border border-emerald-300/30 animate-pulse opacity-70" />
+                <div className="absolute inset-0 rounded-[24px] scanline opacity-25" />
+              </div>
             </div>
           </div>
         </div>
@@ -551,7 +604,7 @@ const Portfolio = () => {
       </section>
 
       {/* Enhanced About Section */}
-      <section id="about" className="py-20 px-4 bg-gradient-to-b from-gray-900 to-gray-800">
+      <section id="about" className="py-20 px-4 bg-transparent">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-4">
             <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
@@ -598,16 +651,17 @@ const Portfolio = () => {
             <div className="space-y-8">
               <div className="space-y-6">
                 <p className="text-lg text-gray-300 leading-relaxed">
-                  Driven by a passion for technology and innovation, I specialize in building intelligent, impactful solutions through 
-                  <span className="text-purple-400 font-semibold">full-stack development and applied AI</span>. With a foundation in 
-                  <span className="text-pink-400 font-semibold">Computer Science and AIML</span>, I bring a proactive, problem-solving mindset to every project—
-                  whether it's creating real-world platforms or deploying machine learning models.
+                  I build intelligent, impact-focused products at the intersection of 
+                  <span className="text-purple-400 font-semibold"> full-stack engineering</span> and 
+                  <span className="text-pink-400 font-semibold"> applied AI</span>. Grounded in 
+                  <span className="text-purple-400 font-semibold"> Computer Science & AIML</span>, I bring a pragmatic, experiment-first mindset to shipping reliable systems—whether that’s launching production web platforms or deploying machine learning models that solve real problems.
                 </p>
                 
                 <p className="text-lg text-gray-300 leading-relaxed">
-                  I thrive in collaborative environments and am committed to delivering 
-                  <span className="text-green-400 font-semibold">high-quality, scalable results</span> that make a 
-                  <span className="text-yellow-400 font-semibold">tangible difference</span>.
+                  I thrive in collaborative teams and care deeply about 
+                  <span className="text-green-400 font-semibold"> scalable architecture</span>, 
+                  <span className="text-green-400 font-semibold"> measurable quality</span>, and 
+                  <span className="text-yellow-400 font-semibold"> user-centered outcomes</span>.
                 </p>
               </div>
 
@@ -710,7 +764,7 @@ const Portfolio = () => {
       </section>
 
       {/* Enhanced Skills Section */}
-      <section id="skills" className="py-20 px-4 bg-gradient-to-b from-gray-800 to-gray-900 relative overflow-hidden">
+      <section id="skills" className="py-20 px-4 bg-transparent relative overflow-hidden">
         {/* Animated background elements */}
         <div className="absolute inset-0 overflow-hidden opacity-20">
           <div className="absolute top-0 left-1/4 w-64 h-64 bg-purple-500/30 rounded-full blur-3xl animate-pulse"></div>
@@ -847,9 +901,6 @@ const Portfolio = () => {
 
       {/* Enhanced Projects Section */}
       <section id="projects" className="py-20 px-4 relative overflow-hidden">
-        {/* Animated background */}
-        <div className="absolute inset-0 bg-gradient-to-b from-gray-900 via-gray-900 to-gray-800 opacity-50"></div>
-        
         <div className="max-w-7xl mx-auto relative z-10">
           <div 
             className={`transform transition-all duration-1000 ${
@@ -1043,7 +1094,7 @@ const Portfolio = () => {
       </section>
 
       {/* Enhanced Contact Section */}
-      <section id="contact" className="py-20 px-4 bg-gradient-to-b from-gray-900 to-gray-800">
+      <section id="contact" className="py-20 px-4 bg-transparent">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
             <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
@@ -1103,7 +1154,7 @@ const Portfolio = () => {
           {/* Resume Download */}
           <div className="mb-16 text-center">
             <a 
-              href="/final_resume.pdf" 
+              href="/final-resume.pdf" 
               download="Piyush_Rathore_Resume.pdf"
               className="inline-flex items-center space-x-3 px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 shadow-2xl hover:shadow-purple-500/50 font-bold text-lg relative overflow-hidden group"
             >
@@ -1185,63 +1236,6 @@ const Portfolio = () => {
             </div>
           </div>
 
-          {/* Buy Me a Drink Section */}
-          <div className="mt-16 bg-gradient-to-r from-purple-900/30 to-pink-900/30 p-8 rounded-2xl border border-purple-500/30 backdrop-blur-sm text-center transform transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/20 group">
-            <div className="flex flex-col items-center">
-              <div className="relative mb-6">
-                <div className="absolute -inset-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full blur-lg opacity-75 group-hover:opacity-100 transition-all duration-500 animate-pulse"></div>
-                <h3 className="text-3xl font-bold text-purple-300 flex items-center justify-center gap-3 relative z-10">
-                  <Coffee className="w-8 h-8 animate-bounce" />
-                  <span>Buy Me a Drink</span>
-                  <Coffee className="w-8 h-8 animate-bounce" />
-                </h3>
-              </div>
-              
-              <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
-                If you like my work and want to support me, feel free to buy me a coffee! 
-                Your support helps me continue building amazing projects.
-              </p>
-              
-              {/* UPI QR Code Container with Animation */}
-              <div className="mb-8 p-6 bg-gradient-to-br from-white to-gray-100 rounded-2xl shadow-2xl transform transition-all duration-500 group-hover:rotate-3 inline-block relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div className="relative z-10">
-                  <img 
-                    src="/upi.jpeg" 
-                    alt="UPI QR Code for donations" 
-                    className="w-64 h-64 object-contain transition-transform duration-500 group-hover:scale-105"
-                  />
-                </div>
-              </div>
-              
-              <div className="mb-6 transform transition-all duration-500 group-hover:-translate-y-1">
-                <p className="text-gray-400 mb-3 text-base">
-                  Scan the QR code with any UPI app to send a donation
-                </p>
-                <div className="inline-flex items-center gap-3 px-6 py-3 bg-gray-800/50 rounded-xl border border-purple-500/30 hover:border-purple-500/60 transition-all duration-300 cursor-pointer group/copy" onClick={() => {
-                  navigator.clipboard.writeText('rathorepiyush0000@okaxis');
-                  alert('UPI ID copied to clipboard!');
-                }}>
-                  <p className="text-purple-300 font-mono text-base">
-                    rathorepiyush0000@okaxis
-                  </p>
-                  <Clipboard className="w-5 h-5 text-purple-400 group-hover/copy:scale-110 transition-transform" />
-                </div>
-              </div>
-              
-              <div className="mt-6 flex flex-wrap justify-center gap-4">
-                <div className="flex items-center text-gray-300 text-base px-4 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full border border-purple-500/30">
-                  <Heart className="w-5 h-5 text-pink-500 mr-2 animate-pulse" />
-                  <span>Thank you for your support!</span>
-                </div>
-                <div className="flex items-center text-gray-300 text-base px-4 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full border border-blue-500/30">
-                  <Sparkles className="w-5 h-5 text-blue-400 mr-2" />
-                  <span>Makes my day brighter!</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
           {/* Additional Links */}
           <div className="mt-12 flex justify-center space-x-8">
             <a 
@@ -1290,7 +1284,7 @@ const Portfolio = () => {
       )}
 
       {/* Enhanced Footer */}
-      <footer className="py-12 px-4 border-t border-purple-500/20 bg-gray-900">
+      <footer className="py-12 px-4 border-t border-purple-500/20 bg-transparent">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
             <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-4">
