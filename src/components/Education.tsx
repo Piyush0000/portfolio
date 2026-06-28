@@ -85,10 +85,7 @@ export default function Education() {
           </div>
         </motion.div>
 
-        <p className="text-center text-xs font-mono font-bold text-[#D6CFC4] mt-6 uppercase tracking-widest">
-          {/* TODO: Add certifications and online courses here */}
-          // TODO: Add certifications
-        </p>
+        {/* TODO: Add certifications and online courses here */}
       </div>
     </section>
   );
