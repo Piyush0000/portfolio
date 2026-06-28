@@ -1,0 +1,193 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Color Variables ────────────────────────────────────── */
+:root {
+  --cream:    #F5F0E8;
+  --cream-2:  #EDE8DE;
+  --orange:   #E8650A;
+  --orange-2: #F97316;
+  --dark:     #0D0B0A;
+  --dark-2:   #1C1917;
+  --muted:    #78716C;
+  --border:   #D6CFC4;
+  --white:    #FFFFFF;
+}
+
+/* ─── Reset ──────────────────────────────────────────────── */
+html { scroll-behavior: smooth; }
+
+/* ─── Scrollbar ──────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--cream); }
+::-webkit-scrollbar-thumb { background: var(--orange); border-radius: 99px; }
+
+/* ─── Noise texture overlay ──────────────────────────────── */
+.noise-bg {
+  position: relative;
+}
+.noise-bg::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px;
+}
+
+/* ─── Bold heading style ─────────────────────────────────── */
+.heading-xl {
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--dark);
+}
+
+/* ─── Orange highlight ───────────────────────────────────── */
+.orange-highlight {
+  position: relative;
+  display: inline-block;
+}
+.orange-highlight::before {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: -4px;
+  right: -4px;
+  height: 38%;
+  background: var(--orange);
+  opacity: 0.25;
+  z-index: -1;
+  transform: skewX(-2deg);
+}
+
+/* ─── Gradient text (orange) ─────────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, #E8650A 0%, #F97316 60%, #FB923C 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Card ───────────────────────────────────────────────── */
+.editorial-card {
+  background: #FFFFFF;
+  border: 1.5px solid var(--border);
+  transition: all 0.25s ease;
+}
+.editorial-card:hover {
+  border-color: var(--orange);
+  box-shadow: 6px 6px 0px var(--orange);
+  transform: translate(-3px, -3px);
+}
+
+/* ─── Orange box decoration ──────────────────────────────── */
+.deco-box {
+  position: absolute;
+  background: var(--orange);
+  opacity: 0.9;
+}
+
+/* ─── Section label ──────────────────────────────────────── */
+.section-label {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--orange);
+  font-weight: 700;
+}
+
+/* ─── Tech badge ─────────────────────────────────────────── */
+.tech-badge {
+  @apply text-xs px-2.5 py-1 rounded font-mono font-bold border-2;
+  background: transparent;
+  border-color: var(--dark);
+  color: var(--dark);
+  transition: all 0.15s;
+}
+.tech-badge:hover {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: white;
+}
+
+/* ─── Contact input ──────────────────────────────────────── */
+.contact-input {
+  @apply w-full px-4 py-3 text-sm outline-none transition-all duration-200;
+  background: #FFFFFF;
+  border: 2px solid var(--border);
+  color: var(--dark);
+  font-weight: 500;
+  border-radius: 4px;
+}
+.contact-input:focus {
+  border-color: var(--orange);
+  box-shadow: 4px 4px 0 var(--orange);
+}
+.contact-input::placeholder {
+  color: #A8A29E;
+}
+
+/* ─── Orange button ──────────────────────────────────────── */
+.btn-orange {
+  background: var(--orange);
+  color: white;
+  font-weight: 800;
+  border: 2px solid var(--dark);
+  box-shadow: 4px 4px 0 var(--dark);
+  transition: all 0.15s;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.btn-orange:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--dark);
+}
+.btn-orange:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 var(--dark);
+}
+
+/* ─── Ghost button ───────────────────────────────────────── */
+.btn-ghost {
+  background: transparent;
+  color: var(--dark);
+  font-weight: 800;
+  border: 2px solid var(--dark);
+  box-shadow: 4px 4px 0 var(--dark);
+  transition: all 0.15s;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.btn-ghost:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--dark);
+  background: var(--dark);
+  color: var(--cream);
+}
+
+/* ─── Timeline ───────────────────────────────────────────── */
+.timeline-dot {
+  width: 14px;
+  height: 14px;
+  background: var(--orange);
+  border: 3px solid var(--dark);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ─── Floating animation ─────────────────────────────────── */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-10px); }
+}
+
+/* ─── Selection ──────────────────────────────────────────── */
+::selection {
+  background: var(--orange);
+  color: white;
+}
