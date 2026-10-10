@@ -1,62 +1,59 @@
 import type { Config } from "tailwindcss";
 
+// Every color is a CSS variable (RGB channels) defined in globals.css, so the
+// dark and light themes swap by changing `data-theme` on <html>.
+const token = (name: string) => `rgb(var(--${name}) / <alpha-value>)`;
+
 const config: Config = {
-  content: [
-    "./src/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
+  content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
+  darkMode: ["selector", '[data-theme="dark"]'],
   theme: {
+    container: { center: true, padding: { DEFAULT: "1.25rem", md: "2rem", xl: "3rem" }, screens: { "2xl": "1440px" } },
     extend: {
       colors: {
-        cream: {
-          DEFAULT: "#F5F0E8",
-          dark: "#EDE8DE",
-          darker: "#E0D9CE",
-        },
-        orange: {
-          DEFAULT: "#E8650A",
-          light: "#F97316",
-          lighter: "#FB923C",
-        },
-        dark: {
-          DEFAULT: "#0D0B0A",
-          2: "#1C1917",
-          3: "#292524",
-        },
-        muted: "#78716C",
-        border: "#D6CFC4",
+        bg: token("c-bg"),
+        "bg-2": token("c-bg-2"),
+        surface: token("c-surface"),
+        ink: token("c-ink"),
+        muted: token("c-muted"),
+        line: token("c-line"),
+        cyan: token("c-cyan"),
+        magenta: token("c-magenta"),
+        violet: token("c-violet"),
+        lime: token("c-lime"),
       },
       fontFamily: {
-        sans: ["var(--font-inter)", "Inter", "system-ui", "sans-serif"],
-        display: ["var(--font-display)", "Space Grotesk", "Inter", "sans-serif"],
-        mono: ["var(--font-mono)", "JetBrains Mono", "monospace"],
+        display: ["var(--font-display)", "system-ui", "sans-serif"],
+        sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+        mono: ["var(--font-mono)", "ui-monospace", "monospace"],
       },
       fontSize: {
-        "display-xl": ["clamp(3rem, 8vw, 7rem)", { lineHeight: "1", letterSpacing: "-0.04em", fontWeight: "900" }],
-        "display-lg": ["clamp(2rem, 6vw, 5rem)", { lineHeight: "1.05", letterSpacing: "-0.03em", fontWeight: "900" }],
-        "display-md": ["clamp(1.5rem, 4vw, 3rem)", { lineHeight: "1.1", letterSpacing: "-0.02em", fontWeight: "800" }],
+        "display-2xl": ["clamp(2.75rem, 9vw, 9.5rem)", { lineHeight: "0.92", letterSpacing: "-0.045em" }],
+        "display-xl": ["clamp(2.25rem, 6.5vw, 6rem)", { lineHeight: "0.95", letterSpacing: "-0.04em" }],
+        "display-lg": ["clamp(2rem, 4.5vw, 4rem)", { lineHeight: "1", letterSpacing: "-0.035em" }],
+        "display-md": ["clamp(1.5rem, 3vw, 2.5rem)", { lineHeight: "1.05", letterSpacing: "-0.03em" }],
       },
-      boxShadow: {
-        brutal: "4px 4px 0 #0D0B0A",
-        "brutal-lg": "6px 6px 0 #0D0B0A",
-        "brutal-orange": "4px 4px 0 #E8650A",
+      spacing: {
+        section: "clamp(6rem, 14vh, 11rem)",
       },
-      animation: {
-        float: "float 5s ease-in-out infinite",
-        "spin-slow": "spin 10s linear infinite",
-        "fade-in-up": "fadeInUp 0.6s ease-out both",
+      transitionTimingFunction: {
+        expo: "cubic-bezier(0.16, 1, 0.3, 1)",
       },
       keyframes: {
-        float: {
-          "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-10px)" },
-        },
-        fadeInUp: {
-          from: { opacity: "0", transform: "translateY(20px)" },
-          to: { opacity: "1", transform: "translateY(0)" },
-        },
+        marquee: { to: { transform: "translateX(-50%)" } },
+        pulseRing: { "0%": { transform: "scale(.8)", opacity: ".7" }, "100%": { transform: "scale(2.4)", opacity: "0" } },
+        shimmer: { to: { backgroundPosition: "200% center" } },
+        float: { "0%,100%": { transform: "translateY(0)" }, "50%": { transform: "translateY(-12px)" } },
+      },
+      animation: {
+        marquee: "marquee 40s linear infinite",
+        "pulse-ring": "pulseRing 2s cubic-bezier(0.16,1,0.3,1) infinite",
+        shimmer: "shimmer 6s linear infinite",
+        float: "float 6s ease-in-out infinite",
       },
     },
   },
   plugins: [],
 };
+
 export default config;
