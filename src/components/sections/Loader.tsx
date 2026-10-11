@@ -1,8 +1,8 @@
 /**
  * Branded intro. Pure CSS: it plays from the first paint and removes itself
- * after ~1.2s without waiting for JavaScript. The head script marks
- * `data-intro="seen"` on repeat visits (per session) and with reduced motion,
- * which hides it entirely.
+ * after ~0.85s without waiting for JavaScript. It only shows when the head
+ * script sets `data-intro="play"`: the first page of a session, motion on,
+ * on tablet-or-wider screens (phones paint content immediately).
  */
 export default function Loader() {
   return (

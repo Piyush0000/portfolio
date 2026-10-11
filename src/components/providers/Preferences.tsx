@@ -23,7 +23,7 @@ const MOTION_KEY = "pr-motion";
  * Runs in <head> before first paint so there is no theme or motion flash.
  * Stored choices win; otherwise follow the OS settings.
  */
-export const prefsInitScript = `(function(){try{var d=document.documentElement;var t=localStorage.getItem('${THEME_KEY}');if(t!=='light'&&t!=='dark'){t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'}d.dataset.theme=t;var m=localStorage.getItem('${MOTION_KEY}');if(m!=='full'&&m!=='reduced'){m=matchMedia('(prefers-reduced-motion: reduce)').matches?'reduced':'full'}d.dataset.motion=m;if(sessionStorage.getItem('pr-intro')){d.dataset.intro='seen'}else{sessionStorage.setItem('pr-intro','1')}}catch(e){}})();`;
+export const prefsInitScript = `(function(){try{var d=document.documentElement;var t=localStorage.getItem('${THEME_KEY}');if(t!=='light'&&t!=='dark'){t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'}d.dataset.theme=t;var m=localStorage.getItem('${MOTION_KEY}');if(m!=='full'&&m!=='reduced'){m=matchMedia('(prefers-reduced-motion: reduce)').matches?'reduced':'full'}d.dataset.motion=m;if(m==='full'&&matchMedia('(min-width: 768px)').matches&&!sessionStorage.getItem('pr-intro')){d.dataset.intro='play';sessionStorage.setItem('pr-intro','1')}}catch(e){}})();`;
 
 function detect3D(): boolean {
   if (typeof window === "undefined") return false;
@@ -53,8 +53,6 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
     setTheme(d.dataset.theme === "light" ? "light" : "dark");
     setMotion(d.dataset.motion === "reduced" ? "reduced" : "full");
     setCanRender3D(detect3D());
-    // Once the intro has fully played, later pages skip its delay.
-    const introDone = window.setTimeout(() => (d.dataset.intro = "seen"), 3000);
 
     // Follow OS changes until the visitor makes an explicit choice.
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -66,7 +64,6 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
     };
     mq.addEventListener("change", onChange);
     return () => {
-      window.clearTimeout(introDone);
       mq.removeEventListener("change", onChange);
     };
   }, []);

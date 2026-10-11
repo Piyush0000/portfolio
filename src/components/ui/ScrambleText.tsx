@@ -57,10 +57,10 @@ export default function ScrambleText({
   return (
     <Tag
       ref={ref as never}
-      aria-label={text}
       onPointerEnter={hover ? run : undefined}
       className={className}
     >
+      <span className="sr-only">{text}</span>
       <span aria-hidden>{output}</span>
     </Tag>
   );

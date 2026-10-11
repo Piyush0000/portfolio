@@ -32,7 +32,8 @@ export default function CountUp({ value, className }: { value: string; className
   }, [inView, reduced, value]);
 
   return (
-    <span ref={ref} className={className} aria-label={value}>
+    <span ref={ref} className={className}>
+      <span className="sr-only">{value}</span>
       <span aria-hidden>{match ? `${match[1]}${n}${match[3]}` : value}</span>
     </span>
   );

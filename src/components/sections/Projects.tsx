@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { m, useScroll, useTransform } from "framer-motion";
 import { ArrowUpRight, Lock } from "lucide-react";
 import { FiGithub } from "react-icons/fi";
 import { archive, featured, type Project } from "@/data/projects";
@@ -20,7 +20,7 @@ export default function Projects() {
           index="03"
           eyebrow="Selected work"
           title="AI agents, voice and *real-money* systems."
-          intro="Each one is in a repo you can read. Entries come from the code, READMEs and git history, not from memory."
+          intro="Every detail below comes from the project's own code, README and git history."
         />
         <h3 id="projects-title" className="sr-only">Featured projects</h3>
         <div className="space-y-16 md:space-y-28">
@@ -62,9 +62,9 @@ function FeaturedCard({ project: p, flip }: { project: Project; flip: boolean })
             aria-label={`${p.title} case study`}
           >
             <div className="relative aspect-[16/10] overflow-hidden rounded-[1.25rem]">
-              <motion.div style={{ y }} className="absolute inset-[-10%]">
+              <m.div style={{ y }} className="absolute inset-[-10%]">
                 <ProjectCover project={p} className="h-full w-full" />
-              </motion.div>
+              </m.div>
               <div className="absolute left-4 top-4 flex gap-2">
                 <span className="chip backdrop-blur">{p.status}</span>
                 <span className="chip backdrop-blur">{p.year}</span>

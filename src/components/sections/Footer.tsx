@@ -14,7 +14,7 @@ export default function Footer() {
         <div className="grid gap-10 md:grid-cols-12">
           <div className="md:col-span-6">
             <p className="font-display text-3xl font-semibold leading-tight md:text-4xl">
-              Open to {site.openTo.toLowerCase()}.
+              Open to {site.openTo}.
             </p>
             <a href={`mailto:${site.email}`} className="mt-4 inline-block font-mono text-sm text-cyan underline-offset-4 hover:underline">
               {site.email}
@@ -56,9 +56,12 @@ export default function Footer() {
           </Magnetic>
         </div>
       </div>
-      <p aria-hidden className="pointer-events-none select-none whitespace-nowrap text-center font-display text-[18vw] font-bold leading-[0.8] tracking-tighter text-ink/[0.04]">
-        {site.name.toUpperCase()}
-      </p>
+      {/* Decorative wordmark, drawn via ::before so it isn't treated as page text. */}
+      <div
+        aria-hidden
+        data-text={site.name.toUpperCase()}
+        className="pointer-events-none select-none whitespace-nowrap text-center font-display text-[18vw] font-bold leading-[0.8] tracking-tighter text-ink/[0.04] before:content-[attr(data-text)]"
+      />
     </footer>
   );
 }

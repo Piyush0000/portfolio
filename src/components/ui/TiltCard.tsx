@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useMotionTemplate, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { m, useMotionTemplate, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useReducedMotion } from "../providers/Preferences";
 
 /** Perspective tilt toward the pointer with a moving specular glare. */
@@ -38,7 +38,7 @@ export default function TiltCard({
 
   return (
     <div style={{ perspective: 1200 }} className="h-full">
-      <motion.div
+      <m.div
         ref={ref}
         onPointerMove={onMove}
         onPointerLeave={reset}
@@ -47,9 +47,9 @@ export default function TiltCard({
       >
         {children}
         {!reduced && (
-          <motion.div aria-hidden className="pointer-events-none absolute inset-0 rounded-[inherit]" style={{ background: glare }} />
+          <m.div aria-hidden className="pointer-events-none absolute inset-0 rounded-[inherit]" style={{ background: glare }} />
         )}
-      </motion.div>
+      </m.div>
     </div>
   );
 }

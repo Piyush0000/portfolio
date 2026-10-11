@@ -18,7 +18,7 @@ export const site = {
   resumeUrl: "/final-resume.pdf",
   avatarUrl: "/pic.jpg",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://piyushrathore.dev",
-  openTo: "Full-stack, backend and AI/LLM engineering roles",
+  openTo: "full-stack, backend and AI/LLM engineering roles",
 };
 
 export const roles = ["Backend Engineer", "AI / LLM Engineer", "Full-Stack Developer", "Engineering Lead"];

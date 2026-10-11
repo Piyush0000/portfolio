@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 export type OrbitNode = { id: string; label: string; ring: number; angle: number };
 
@@ -29,7 +29,7 @@ export default function OrbitDiagram({ active, className }: { active: string | n
       </defs>
 
       {RINGS.slice(1).map((r, i) => (
-        <motion.circle
+        <m.circle
           key={r}
           r={r}
           fill="none"
@@ -46,7 +46,7 @@ export default function OrbitDiagram({ active, className }: { active: string | n
         const { x, y } = polar(RINGS[n.ring], n.angle);
         const on = active === n.id || active === "api";
         return (
-          <motion.line
+          <m.line
             key={`l-${n.id}`}
             x1={0}
             y1={0}
@@ -61,7 +61,7 @@ export default function OrbitDiagram({ active, className }: { active: string | n
       })}
 
       <circle r="90" fill="url(#core-glow)" />
-      <motion.circle
+      <m.circle
         r="34"
         fill="rgb(var(--c-bg-2))"
         stroke="rgb(var(--c-cyan))"
@@ -76,15 +76,15 @@ export default function OrbitDiagram({ active, className }: { active: string | n
         const { x, y } = polar(RINGS[n.ring], n.angle);
         const on = active === n.id;
         return (
-          <motion.g key={n.id} animate={{ x, y }} initial={false}>
-            <motion.circle
+          <m.g key={n.id} animate={{ x, y }} initial={false}>
+            <m.circle
               r={on ? 14 : 7}
               fill={on ? "rgb(var(--c-magenta))" : "rgb(var(--c-violet))"}
               animate={{ r: on ? 14 : 7 }}
               transition={{ type: "spring", stiffness: 260, damping: 18 }}
             />
             {on && (
-              <motion.circle
+              <m.circle
                 r={14}
                 fill="none"
                 stroke="rgb(var(--c-magenta))"
@@ -104,7 +104,7 @@ export default function OrbitDiagram({ active, className }: { active: string | n
             >
               {n.label}
             </text>
-          </motion.g>
+          </m.g>
         );
       })}
     </svg>

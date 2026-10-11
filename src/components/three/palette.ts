@@ -1,4 +1,4 @@
-import { Color } from "three";
+import { Color, SRGBColorSpace } from "three";
 
 export type ScenePalette = { cyan: Color; magenta: Color; violet: Color; lime: Color; bg: Color; ink: Color; light: boolean };
 
@@ -7,7 +7,7 @@ export function readPalette(): ScenePalette {
   const css = getComputedStyle(document.documentElement);
   const read = (name: string) => {
     const [r, g, b] = css.getPropertyValue(name).trim().split(/\s+/).map(Number);
-    return new Color(r / 255, g / 255, b / 255);
+    return new Color().setRGB(r / 255, g / 255, b / 255, SRGBColorSpace);
   };
   return {
     cyan: read("--c-cyan"),

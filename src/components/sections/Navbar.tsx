@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { Moon, Sun, Pause, Play, Menu, X, Box } from "lucide-react";
 import { navLinks, site } from "@/data/site";
 import { usePrefs } from "../providers/Preferences";
@@ -55,12 +55,12 @@ export default function Navbar() {
           aria-label="Primary"
           className={`container flex items-center justify-between rounded-full transition-all duration-500 ${scrolled ? "glass max-w-6xl !px-4 py-2" : ""}`}
         >
-          <Link href="/" className="group flex items-center gap-3" aria-label={`${site.name}, home`}>
-            <span className="relative grid h-9 w-9 place-items-center rounded-full border border-cyan/50 font-display text-xs font-bold">
+          <Link href="/" className="group flex items-center gap-3">
+            <span aria-hidden className="relative grid h-9 w-9 place-items-center rounded-full border border-cyan/50 font-display text-xs font-bold">
               <span className="absolute inset-0 rounded-full bg-cyan/20 blur-md transition group-hover:bg-magenta/40" />
               <span className="relative">PR</span>
             </span>
-            <span className="hidden font-mono text-xs uppercase tracking-[0.2em] text-ink/80 sm:block">{site.name}</span>
+            <span className="sr-only font-mono text-xs uppercase tracking-[0.2em] text-ink/80 sm:not-sr-only">{site.name}</span>
           </Link>
 
           <ul className="hidden items-center gap-1 lg:flex">
@@ -110,7 +110,7 @@ export default function Navbar() {
 
       <AnimatePresence>
         {open && (
-          <motion.div
+          <m.div
             id="mobile-menu"
             role="dialog"
             aria-modal="true"
@@ -123,14 +123,14 @@ export default function Navbar() {
           >
             <ul className="space-y-4">
               {[...navLinks, { label: "Immersive", href: "/immersive" }].map((l, i) => (
-                <motion.li key={l.href} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 + i * 0.05 }}>
+                <m.li key={l.href} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 + i * 0.05 }}>
                   <Link href={l.href} onClick={(e) => onNav(e, l.href)} className="font-display text-4xl font-semibold">
                     {l.label}
                   </Link>
-                </motion.li>
+                </m.li>
               ))}
             </ul>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </>

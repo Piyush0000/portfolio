@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { ArrowUpRight, Star } from "lucide-react";
 import { FiGithub } from "react-icons/fi";
 import type { GitHubActivity as Data } from "@/lib/github";
@@ -54,7 +54,7 @@ export default function GitHubActivity({ data }: { data: Data | null }) {
               </div>
 
               <div className="mt-8 overflow-x-auto pb-2" role="img" aria-label={`GitHub heatmap: ${data.total} ${label}`}>
-                <motion.div
+                <m.div
                   className="flex w-max gap-[3px]"
                   initial={reduced ? false : { clipPath: "inset(0 100% 0 0)" }}
                   whileInView={{ clipPath: "inset(0 0% 0 0)" }}
@@ -72,7 +72,7 @@ export default function GitHubActivity({ data }: { data: Data | null }) {
                       ))}
                     </div>
                   ))}
-                </motion.div>
+                </m.div>
               </div>
               <div className="mt-4 flex items-center justify-end gap-1.5 font-mono text-[0.65rem] uppercase tracking-[0.14em] text-muted">
                 Less {levels.map((l) => <span key={l} className={`h-2.5 w-2.5 rounded-[2px] ${l}`} />)} More

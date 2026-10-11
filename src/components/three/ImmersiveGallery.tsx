@@ -24,7 +24,11 @@ function usePanelTexture(project: Project, palette: ScenePalette, active: boolea
     canvas.height = h;
     const ctx = canvas.getContext("2d")!;
     const accent = palette[project.accent];
-    const rgb = (c: THREE.Color, a = 1) => `rgba(${(c.r * 255) | 0},${(c.g * 255) | 0},${(c.b * 255) | 0},${a})`;
+    // Palette colors are stored linear; canvas 2D wants sRGB.
+    const rgb = (c: THREE.Color, a = 1) => {
+      const s = c.getRGB({ r: 0, g: 0, b: 0 }, THREE.SRGBColorSpace);
+      return `rgba(${Math.round(s.r * 255)},${Math.round(s.g * 255)},${Math.round(s.b * 255)},${a})`;
+    };
 
     ctx.fillStyle = "rgba(10,12,24,0.92)";
     ctx.fillRect(0, 0, w, h);

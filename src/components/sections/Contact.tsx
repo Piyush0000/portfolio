@@ -44,7 +44,7 @@ export default function Contact() {
 
   return (
     <section id="contact" aria-labelledby="contact-title" className="relative overflow-hidden py-section">
-      <div aria-hidden className="pointer-events-none absolute bottom-0 left-1/2 h-[50vh] w-[90vw] -translate-x-1/2 rounded-full bg-violet/15 blur-[140px]" />
+      <div aria-hidden className="pointer-events-none absolute bottom-0 left-1/2 h-[50vh] w-[90vw] -translate-x-1/2 bg-[radial-gradient(closest-side,rgb(var(--c-violet)/0.16),transparent)]" />
       <div className="container relative">
         <SectionHeading index="07" eyebrow="Contact" title="Let's build something *that ships.*" />
 

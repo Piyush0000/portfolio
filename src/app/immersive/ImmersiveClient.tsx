@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { ArrowLeft, ArrowUpRight, X } from "lucide-react";
 import { projects } from "@/data/projects";
 import ProjectCover from "@/components/project/ProjectCover";
@@ -19,6 +19,9 @@ const gallery = projects.filter((p) => p.tier !== "archive");
 export default function ImmersiveClient() {
   const [webgl, setWebgl] = useState<boolean | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
+  // WebGL only boots when the visitor opts in, so the page itself stays light.
+  const [launched, setLaunched] = useState(false);
+  const live = webgl && launched;
   const project = gallery.find((p) => p.slug === selected);
 
   useEffect(() => {
@@ -40,7 +43,23 @@ export default function ImmersiveClient() {
     <main id="main" className="relative h-[100svh] overflow-hidden">
       <h1 className="sr-only">Immersive project gallery</h1>
 
-      {webgl && <ImmersiveGallery projects={gallery} selected={selected} onSelect={setSelected} />}
+      {live && <ImmersiveGallery projects={gallery} selected={selected} onSelect={setSelected} />}
+
+      {webgl && !launched && (
+        <div className="container relative grid h-full content-center justify-items-start gap-6 pt-[var(--nav-h)]">
+          <div aria-hidden className="bg-grid mask-radial absolute inset-0 -z-10 opacity-70" />
+          <p className="eyebrow text-cyan">Immersive mode · WebXR ready</p>
+          <p className="max-w-3xl font-display text-display-lg font-semibold">
+            Step inside the <span className="text-gradient">work.</span>
+          </p>
+          <p className="max-w-xl text-lg text-ink/80">
+            Projects float around you as interactive panels. Drag to look around, click a panel to open it, or use a WebXR headset to walk the gallery in VR.
+          </p>
+          <button type="button" onClick={() => setLaunched(true)} className="btn-primary" data-cursor="Launch">
+            Launch gallery
+          </button>
+        </div>
+      )}
 
       {webgl === false && (
         <div className="container grid h-full content-center gap-6 pt-[var(--nav-h)]">
@@ -66,7 +85,7 @@ export default function ImmersiveClient() {
           <Link href="/" className="glass pointer-events-auto inline-flex items-center gap-2 rounded-full px-4 py-2 font-mono text-xs uppercase tracking-[0.16em]">
             <ArrowLeft className="h-3.5 w-3.5" aria-hidden /> Exit
           </Link>
-          {webgl && (
+          {live && (
             <p className="glass hidden max-w-xs rounded-2xl px-4 py-3 font-mono text-[0.7rem] leading-relaxed text-muted md:block">
               Drag to look around · Click a panel to open it · On a WebXR headset, press <span className="text-cyan">Enter VR</span>
             </p>
@@ -75,7 +94,7 @@ export default function ImmersiveClient() {
       </div>
 
       {/* Keyboard / screen-reader access to the same panels */}
-      {webgl && (
+      {live && (
         <nav aria-label="Gallery projects" className="absolute inset-x-0 bottom-24 z-10 md:bottom-8">
           <ul className="container flex flex-wrap justify-center gap-2">
             {gallery.map((p) => (
@@ -96,7 +115,7 @@ export default function ImmersiveClient() {
 
       <AnimatePresence>
         {project && (
-          <motion.aside
+          <m.aside
             key={project.slug}
             aria-label={`${project.title} details`}
             initial={{ opacity: 0, x: 40 }}
@@ -117,7 +136,7 @@ export default function ImmersiveClient() {
             <Link href={`/projects/${project.slug}`} className="btn-primary mt-6">
               Open case study <ArrowUpRight className="h-4 w-4" aria-hidden />
             </Link>
-          </motion.aside>
+          </m.aside>
         )}
       </AnimatePresence>
     </main>

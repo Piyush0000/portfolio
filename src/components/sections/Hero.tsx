@@ -6,22 +6,19 @@ import { useEffect, useState } from "react";
 import { ArrowDownRight, ArrowUpRight, FileDown } from "lucide-react";
 import { FiGithub, FiLinkedin } from "react-icons/fi";
 import { roles, site } from "@/data/site";
+import { onWake } from "@/lib/wake";
 import { usePrefs } from "../providers/Preferences";
 import Magnetic from "../ui/Magnetic";
 import ScrambleText from "../ui/ScrambleText";
 
-// Three.js is code-split and only fetched on capable devices, after the page is idle.
+// Three.js is code-split and only fetched on capable devices, once the visitor
+// interacts (or after a few seconds), so it never competes with first paint.
 const HeroScene = dynamic(() => import("../three/HeroScene"), { ssr: false });
 
-function useIdle() {
-  const [idle, setIdle] = useState(false);
-  useEffect(() => {
-    const w = window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number };
-    const go = () => setIdle(true);
-    if (w.requestIdleCallback) w.requestIdleCallback(go, { timeout: 2000 });
-    else window.setTimeout(go, 1200);
-  }, []);
-  return idle;
+function useWake() {
+  const [awake, setAwake] = useState(false);
+  useEffect(() => onWake(() => setAwake(true)), []);
+  return awake;
 }
 
 function RoleCycler() {
@@ -37,9 +34,9 @@ function RoleCycler() {
 
 export default function Hero() {
   const { canRender3D, motion } = usePrefs();
-  const idle = useIdle();
+  const awake = useWake();
   const [sceneReady, setSceneReady] = useState(false);
-  const show3D = canRender3D && idle;
+  const show3D = canRender3D && awake;
 
   const first = site.name.split(" ")[0];
   const last = site.name.split(" ").slice(1).join(" ");
@@ -48,16 +45,16 @@ export default function Hero() {
     <section id="top" aria-labelledby="hero-title" className="relative flex min-h-[100svh] items-center overflow-hidden pt-[var(--nav-h)]">
       {/* Backdrop: neon glows, grid and the static orb that the 3D scene replaces. */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-[20%] top-[-10%] h-[60vmax] w-[60vmax] rounded-full bg-violet/20 blur-[120px]" />
-        <div className="absolute -right-[15%] bottom-[-20%] h-[50vmax] w-[50vmax] rounded-full bg-cyan/10 blur-[120px]" />
+        <div className="absolute -left-[20%] top-[-10%] h-[60vmax] w-[60vmax] bg-[radial-gradient(closest-side,rgb(var(--c-violet)/0.22),transparent)]" />
+        <div className="absolute -right-[15%] bottom-[-20%] h-[50vmax] w-[50vmax] bg-[radial-gradient(closest-side,rgb(var(--c-cyan)/0.12),transparent)]" />
         <div className="bg-grid mask-radial absolute inset-0 opacity-70" />
         <div
-          className={`absolute right-[-12vmin] top-1/2 h-[70vmin] w-[70vmin] -translate-y-1/2 transition-opacity duration-1000 md:right-[4vw] md:h-[56vmin] md:w-[56vmin] ${
-            sceneReady ? "opacity-0" : "opacity-100"
+          className={`absolute right-[-22vmin] top-[14%] h-[58vmin] w-[58vmin] transition-opacity duration-1000 md:right-[4vw] md:top-1/2 md:h-[56vmin] md:w-[56vmin] md:-translate-y-1/2 ${
+            sceneReady ? "opacity-0" : "opacity-50 md:opacity-100"
           }`}
         >
-          <div className="absolute inset-0 animate-[spin_24s_linear_infinite] rounded-full bg-[conic-gradient(from_0deg,rgb(var(--c-cyan)),rgb(var(--c-violet)),rgb(var(--c-magenta)),rgb(var(--c-cyan)))] opacity-70 blur-2xl" />
-          <div className="absolute inset-[6%] rounded-full bg-[radial-gradient(circle_at_35%_30%,rgb(var(--c-surface)),rgb(6_7_15)_70%)] shadow-[inset_0_0_60px_rgb(var(--c-cyan)/0.5)]" />
+          <div className="absolute inset-0 animate-[spin_24s_linear_infinite] rounded-full will-change-transform bg-[conic-gradient(from_0deg,rgb(var(--c-cyan)),rgb(var(--c-violet)),rgb(var(--c-magenta)),rgb(var(--c-cyan)))] opacity-80 [mask-image:radial-gradient(closest-side,transparent_55%,black_80%,transparent)]" />
+          <div className="absolute inset-[6%] rounded-full bg-[radial-gradient(circle_at_35%_30%,#1c2142,#06070f_70%)] shadow-[inset_0_0_60px_rgb(var(--c-cyan)/0.5)]" />
           <div className="absolute inset-[-10%] rounded-full border border-cyan/20" />
         </div>
       </div>
@@ -75,7 +72,7 @@ export default function Hero() {
               <span className="absolute inline-flex h-full w-full animate-pulse-ring rounded-full bg-lime" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-lime" />
             </span>
-            Open to {site.openTo.toLowerCase()}
+            Open to {site.openTo}
           </p>
 
           <h1 id="hero-title" aria-label={site.name} className="font-display text-display-2xl font-bold uppercase">

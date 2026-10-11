@@ -183,7 +183,7 @@
   inherits: false;
 }
 .intro-loader {
-  animation: intro-out 0.8s cubic-bezier(0.76, 0, 0.24, 1) 1.05s forwards;
+  animation: intro-out 0.6s cubic-bezier(0.76, 0, 0.24, 1) 0.25s forwards;
 }
 .intro-spin {
   animation: spin 0.9s linear infinite;
@@ -191,7 +191,7 @@
 .intro-count::after {
   counter-reset: n var(--intro-num);
   content: counter(n);
-  animation: intro-count 0.9s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  animation: intro-count 0.45s cubic-bezier(0.65, 0, 0.35, 1) forwards;
 }
 @keyframes intro-count {
   to { --intro-num: 100; }
@@ -202,19 +202,19 @@
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
-html[data-intro="seen"] .intro-loader,
-html[data-motion="reduced"] .intro-loader {
+/* The loader only plays when the head script marks data-intro="play"
+   (first page of a session, motion on). */
+html:not([data-intro="play"]) .intro-loader {
   display: none;
 }
 
-/* ─── Hero title: CSS word rise so it never waits for hydration ── */
+/* ─── Above-the-fold reveals (CSS, so they never wait for hydration) ──
+   During the intro, the loader's wipe is the reveal, so these stay
+   static and the headline is painted immediately (fast LCP). */
 .rise-word {
   display: inline-block;
   animation: rise 1s cubic-bezier(0.16, 1, 0.3, 1) both;
-  animation-delay: calc(var(--intro-delay, 1.15s) + var(--d, 0s));
-}
-html[data-intro="seen"] {
-  --intro-delay: 0.1s;
+  animation-delay: calc(0.1s + var(--d, 0s));
 }
 @keyframes rise {
   from { transform: translateY(110%) rotate(4deg); }
@@ -222,11 +222,15 @@ html[data-intro="seen"] {
 }
 .fade-up {
   animation: fade-up 1s cubic-bezier(0.16, 1, 0.3, 1) both;
-  animation-delay: calc(var(--intro-delay, 1.15s) + var(--d, 0s));
+  animation-delay: calc(0.1s + var(--d, 0s));
 }
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(18px); }
   to { opacity: 1; transform: none; }
+}
+html[data-intro="play"] .rise-word,
+html[data-intro="play"] .fade-up {
+  animation: none;
 }
 
 /* Motion off: set by the motion toggle or by prefers-reduced-motion. */

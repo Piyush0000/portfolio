@@ -51,6 +51,7 @@ const orbFragment = /* glsl */ `
     vec3 col = mix(core, grad, clamp(fres * 1.35 + 0.06, 0.0, 1.0));
     col += grad * bands * 0.45;
     gl_FragColor = vec4(col, 1.0);
+    #include <colorspace_fragment>
   }
 `;
 
@@ -92,11 +93,12 @@ function Orb({ palette, input, animate }: { palette: ScenePalette; input: InputR
 
     const g = group.current;
     if (!g) return;
-    // Sit right of the headline on wide screens, centered otherwise.
-    const baseX = viewport.width > 8 ? viewport.width * 0.2 : 0;
+    // Keep clear of the headline: sit in the right third, sized to the viewport.
+    const baseX = viewport.width * 0.3;
+    const fit = THREE.MathUtils.clamp(viewport.width / 15, 0.5, 0.95);
     g.position.x = THREE.MathUtils.lerp(g.position.x, baseX - mx * 0.25, 0.05);
     g.position.y = THREE.MathUtils.lerp(g.position.y, scroll * 2.2 + my * 0.2, 0.08);
-    const s = 1 - scroll * 0.25;
+    const s = fit * (1 - scroll * 0.25);
     g.scale.setScalar(THREE.MathUtils.lerp(g.scale.x, s, 0.08));
     g.rotation.x = THREE.MathUtils.lerp(g.rotation.x, my * 0.35, 0.05);
     g.rotation.y += animate ? delta * 0.12 : 0;
@@ -189,6 +191,7 @@ const particleFragment = /* glsl */ `
     float a = smoothstep(0.5, 0.0, d);
     vec3 col = vSeed < 0.45 ? uC1 : (vSeed < 0.75 ? uC2 : uC3);
     gl_FragColor = vec4(col, a * vAlpha * uOpacity);
+    #include <colorspace_fragment>
   }
 `;
 

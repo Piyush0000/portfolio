@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useScroll, useSpring } from "framer-motion";
+import { m, useScroll, useSpring } from "framer-motion";
 import { experience } from "@/data/site";
 import SectionHeading from "../ui/SectionHeading";
 import Reveal from "../ui/Reveal";
@@ -20,7 +20,7 @@ export default function Experience() {
         <ol ref={list} className="relative ml-2 md:ml-0">
           {/* Track + scroll-drawn progress line */}
           <span aria-hidden className="absolute bottom-0 left-0 top-0 w-px bg-line/10 md:left-[25%]" />
-          <motion.span
+          <m.span
             aria-hidden
             style={{ scaleY }}
             className="absolute bottom-0 left-0 top-0 w-px origin-top bg-gradient-to-b from-cyan via-violet to-magenta md:left-[25%]"

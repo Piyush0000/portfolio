@@ -4,6 +4,7 @@ import "./globals.css";
 import { site } from "@/data/site";
 import { PreferencesProvider, prefsInitScript } from "@/components/providers/Preferences";
 import { SmoothScrollProvider } from "@/components/providers/SmoothScroll";
+import { MotionProvider } from "@/components/providers/Motion";
 import Navbar from "@/components/sections/Navbar";
 import Loader from "@/components/sections/Loader";
 import Cursor from "@/components/ui/Cursor";
@@ -79,13 +80,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <PreferencesProvider>
-          <SmoothScrollProvider>
-            <Loader />
-            <Navbar />
-            {children}
-            <Cursor />
-            <div aria-hidden className="grain" />
-          </SmoothScrollProvider>
+          <MotionProvider>
+            <SmoothScrollProvider>
+              <Loader />
+              <Navbar />
+              {children}
+              <Cursor />
+              <div aria-hidden className="grain" />
+            </SmoothScrollProvider>
+          </MotionProvider>
         </PreferencesProvider>
       </body>
     </html>

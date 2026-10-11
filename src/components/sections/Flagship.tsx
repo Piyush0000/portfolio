@@ -59,7 +59,7 @@ export default function Flagship() {
                   </span>
                 </div>
                 <OrbitDiagram active={steps[active].node} className="mx-auto mt-4 aspect-square w-full max-w-[30rem]" />
-                <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl bg-line/10 sm:grid-cols-4">
+                <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl bg-line/10 xl:grid-cols-4">
                   {flagship.facts.map((f) => (
                     <div key={f.label} className="bg-bg-2/80 p-4">
                       <dt className="sr-only">{f.label}</dt>

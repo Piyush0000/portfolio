@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { Server, Sparkles, LayoutTemplate, Cloud } from "lucide-react";
 import { skillGroups, type SkillGroup } from "@/data/site";
 import SectionHeading from "../ui/SectionHeading";
@@ -29,7 +29,7 @@ export default function Skills() {
             const Icon = icons[g.id];
             return (
               <TiltCard key={g.id} className="rounded-3xl" max={5}>
-                <motion.div
+                <m.div
                   initial={reduced ? false : { opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-10% 0px" }}
@@ -52,7 +52,7 @@ export default function Skills() {
                     </div>
                     <Icon className="h-7 w-7" style={{ color: "rgb(var(--accent))" }} aria-hidden />
                   </div>
-                  <motion.ul
+                  <m.ul
                     className="relative mt-8 flex flex-wrap gap-2"
                     initial={reduced ? false : "hidden"}
                     whileInView="show"
@@ -60,16 +60,16 @@ export default function Skills() {
                     variants={{ show: { transition: { staggerChildren: 0.035, delayChildren: 0.2 + gi * 0.08 } } }}
                   >
                     {g.items.map((s) => (
-                      <motion.li
+                      <m.li
                         key={s}
                         variants={{ hidden: { opacity: 0, y: 12, scale: 0.9 }, show: { opacity: 1, y: 0, scale: 1 } }}
                         className="chip text-[0.78rem] transition-colors hover:border-[rgb(var(--accent))] hover:text-ink"
                       >
                         {s}
-                      </motion.li>
+                      </m.li>
                     ))}
-                  </motion.ul>
-                </motion.div>
+                  </m.ul>
+                </m.div>
               </TiltCard>
             );
           })}
@@ -80,8 +80,9 @@ export default function Skills() {
       <div aria-hidden className="mt-section flex overflow-hidden border-y border-line/10 py-6 [mask-image:linear-gradient(90deg,transparent,black_10%,black_90%,transparent)]">
         <div className="flex w-max animate-marquee gap-10 pr-10">
           {[...all, ...all].map((s, i) => (
+            // Decorative: drawn via ::before so it isn't treated as page text.
             <span key={i} className="flex items-center gap-10 whitespace-nowrap font-display text-3xl font-semibold text-ink/25 md:text-5xl">
-              {s}
+              <span data-text={s} className="before:content-[attr(data-text)]" />
               <span className="h-2 w-2 rounded-full bg-cyan/60" />
             </span>
           ))}

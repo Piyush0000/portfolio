@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { useReducedMotion } from "../providers/Preferences";
 
 /** Fade-and-rise on scroll into view. */
@@ -17,7 +17,7 @@ export default function Reveal({
 }) {
   const reduced = useReducedMotion();
   return (
-    <motion.div
+    <m.div
       className={className}
       initial={reduced ? false : { opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -25,6 +25,6 @@ export default function Reveal({
       transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay }}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }

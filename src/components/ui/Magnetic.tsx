@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { m, useMotionValue, useSpring } from "framer-motion";
 import { useReducedMotion } from "../providers/Preferences";
 
 /** Pulls its child toward the pointer while hovered, then springs back. */
@@ -31,8 +31,8 @@ export default function Magnetic({
   };
 
   return (
-    <motion.div ref={ref} onPointerMove={onMove} onPointerLeave={reset} style={{ x, y }} className={className ?? "inline-block"}>
+    <m.div ref={ref} onPointerMove={onMove} onPointerLeave={reset} style={{ x, y }} className={className ?? "inline-block"}>
       {children}
-    </motion.div>
+    </m.div>
   );
 }
